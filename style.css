@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Rajdhani&display=swap');
+
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: 'Rajdhani', sans-serif;
+  background: linear-gradient(to bottom, #000013, #1a1a40);
+  color: #00006f;
+  background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-repeat: repeat;
+}
+
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  text-align: center;
+  font-size: 2.5em;
+  color: #4c016c;
+  text-shadow: 0 0 10px #ffcc70;
+}
+
+.skill {
+  background: rgba(69, 38, 1, 0.8);
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 12px rgba(0, 0, 80, 0.6);
+}
+
+.skill h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: #010e20;
+  margin-bottom: 10px;
+}
+
+.resource {
+  color: #c9d9ef;
+  margin-left: 20px;
+  cursor: pointer;
+  padding: 5px;
+  transition: all 0.3s ease;
+}
+
+.resource:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.resource.done {
+  text-decoration: line-through;
+  color: #8888aa;
+  opacity: 0.6;
+}
+
+button {
+  font-family: 'Rajdhani', sans-serif;
+  padding: 8px 12px;
+  margin: 5px;
+  background-color: #2e86c1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #004602;
+}
+
+button.remove {
+  background-color: #e74c3c;
+}
+
+button.add-resource {
+  background-color: #58d68d;
+}
+
+input[type="text"] {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 200px;
+}
+
+#add-skill-form {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.progress {
+  background-color: #222;
+  height: 8px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #00f2fe, #4facfe);
+  width: 0%;
+  transition: width 0.5s ease-in-out;
+}

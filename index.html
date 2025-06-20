@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillGap Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Track and Close Your Skill Gaps</h1>
+
+  <section id="intro">
+    <p>Identify, track, and conquer the exact knowledge gaps holding you back. Define your current level, set goals, and smash through learning barriers—one resource at a time.</p>
+  </section>
+
+  <div id="add-skill-form">
+    <input type="text" id="new-skill-name" placeholder="New skill name" />
+    <label>Current Level:
+      <input type="number" id="new-skill-level" min="1" max="10" value="1" />
+    </label>
+    <label>Target Level:
+      <input type="number" id="new-skill-goal" min="1" max="10" value="5" />
+    </label>
+    <button onclick="addSkill()">Add Skill</button>
+  </div>
+
+  <div id="skills-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
