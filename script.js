@@ -1,4 +1,5 @@
 let skills = JSON.parse(localStorage.getItem('skills')) || [];
+let globalChart = null;
 
 function saveSkills() {
   localStorage.setItem('skills', JSON.stringify(skills));
@@ -7,13 +8,14 @@ function saveSkills() {
 function renderSkills() {
   const container = document.getElementById('skills-container');
   container.innerHTML = '';
+  updateGlobalStats();
 
   skills.forEach((skill, index) => {
     const div = document.createElement('div');
     div.className = 'skill';
 
     const title = document.createElement('h2');
-    title.textContent = skill.name + ` (${skill.level}/${skill.goal})`;
+    title.textContent = skill.name;
     div.appendChild(title);
 
     const progress = document.createElement('div');
@@ -21,20 +23,13 @@ function renderSkills() {
 
     const fill = document.createElement('div');
     fill.className = 'progress-fill';
-    fill.style.width = `${(skill.level / skill.goal) * 100}%`;
+
+    const total = skill.resources.length || 1;
+    const completed = skill.resources.filter(r => r.done).length;
+    fill.style.width = `${(completed / total) * 100}%`;
+
     progress.appendChild(fill);
     div.appendChild(progress);
-
-    const updateLevels = document.createElement('div');
-    updateLevels.innerHTML = `
-      <label>Level: 
-        <input type="number" min="1" max="10" value="${skill.level}" onchange="updateSkillLevel(${index}, this.value)">
-      </label>
-      <label>Goal: 
-        <input type="number" min="1" max="10" value="${skill.goal}" onchange="updateSkillGoal(${index}, this.value)">
-      </label>
-    `;
-    div.appendChild(updateLevels);
 
     const removeBtn = document.createElement('button');
     removeBtn.textContent = 'Remove Skill';
@@ -47,15 +42,29 @@ function renderSkills() {
     div.appendChild(removeBtn);
 
     skill.resources.forEach((res, resIndex) => {
-      const p = document.createElement('p');
-      p.className = 'resource' + (res.done ? ' done' : '');
-      p.textContent = res.title + ' – ' + res.link;
-      p.onclick = () => {
-        res.done = !res.done;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'resource';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = res.done;
+      checkbox.onchange = () => {
+        res.done = checkbox.checked;
         saveSkills();
         renderSkills();
       };
-      div.appendChild(p);
+      wrapper.appendChild(checkbox);
+
+      const label = document.createElement('span');
+
+      if (res.link) {
+        label.innerHTML = `${res.title} – <a href="${res.link}" target="_blank" rel="noopener noreferrer">${res.link}</a>`;
+      } else {
+        label.textContent = `${res.title}`;
+      }
+
+      wrapper.appendChild(label);
+      div.appendChild(wrapper);
     });
 
     const addResBtn = document.createElement('button');
@@ -78,26 +87,48 @@ function renderSkills() {
 
 function addSkill() {
   const name = document.getElementById('new-skill-name').value.trim();
-  const level = parseInt(document.getElementById('new-skill-level').value);
-  const goal = parseInt(document.getElementById('new-skill-goal').value);
-
-  if (name && level && goal) {
-    skills.push({ name, level, goal, resources: [] });
+  if (name) {
+    skills.push({ name, resources: [] });
     saveSkills();
     renderSkills();
     document.getElementById('new-skill-name').value = '';
   }
 }
+function updateGlobalStats() {
+  const total = skills.reduce((sum, skill) => sum + skill.resources.length, 0);
+  const completed = skills.reduce(
+    (sum, skill) => sum + skill.resources.filter(r => r.done).length,
+    0
+  );
 
-function updateSkillLevel(index, val) {
-  skills[index].level = parseInt(val);
-  saveSkills();
-  renderSkills();
-}
-function updateSkillGoal(index, val) {
-  skills[index].goal = parseInt(val);
-  saveSkills();
-  renderSkills();
+  const remaining = total - completed;
+
+  const ctx = document.getElementById('globalChart').getContext('2d');
+
+  if (globalChart) {
+    globalChart.destroy(); 
+  }
+
+  globalChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Completed', 'Remaining'],
+      datasets: [{
+        data: [completed, remaining],
+        backgroundColor: ['#58d68d', '#2e86c1'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+            color: '#ffffff'
+          }
+        }
+      }
+    }
+  });
 }
 
 renderSkills();
