@@ -5,8 +5,10 @@ body {
   padding: 20px;
   font-family: 'Rajdhani', sans-serif;
   background-color: #000000;
-  background-image: 
-    url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-image:
+  radial-gradient(circle at top, #0d0221 0%, #000000 100%),
+  url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-blend-mode: screen;
   background-size: cover, auto;
   background-repeat: repeat, repeat;
   background-attachment: fixed;
@@ -135,4 +137,7 @@ input[type="text"] {
   text-align: center;
   box-shadow: 0 0 12px rgba(150, 100, 255, 0.1);
 }
+
+
+
 
