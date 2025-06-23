@@ -8,7 +8,6 @@ function saveSkills() {
 function renderSkills() {
   const container = document.getElementById('skills-container');
   container.innerHTML = '';
-  updateGlobalStats();
 
   skills.forEach((skill, index) => {
     const div = document.createElement('div');
@@ -16,30 +15,32 @@ function renderSkills() {
 
     const title = document.createElement('h2');
     title.textContent = skill.name;
-    div.appendChild(title);
+    title.style.cursor = 'pointer';
 
+    const contentWrapper = document.createElement('div');
+    contentWrapper.className = 'skill-content';
+    contentWrapper.style.display = 'block';
+
+    title.onclick = () => {
+      const isVisible = contentWrapper.style.display === 'block';
+      contentWrapper.style.display = isVisible ? 'none' : 'block';
+    };
+
+    // Progress bar 
     const progress = document.createElement('div');
     progress.className = 'progress';
-
     const fill = document.createElement('div');
     fill.className = 'progress-fill';
-
     const total = skill.resources.length || 1;
     const completed = skill.resources.filter(r => r.done).length;
     fill.style.width = `${(completed / total) * 100}%`;
-
     progress.appendChild(fill);
-    div.appendChild(progress);
 
-    const removeBtn = document.createElement('button');
-    removeBtn.textContent = 'Remove Skill';
-    removeBtn.className = 'remove';
-    removeBtn.onclick = () => {
-      skills.splice(index, 1);
+    if ((completed / total) === 1 && !skill.completedCelebrated) {
+      confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 } });
+      skill.completedCelebrated = true;
       saveSkills();
-      renderSkills();
-    };
-    div.appendChild(removeBtn);
+    }
 
     skill.resources.forEach((res, resIndex) => {
       const wrapper = document.createElement('div');
@@ -49,22 +50,21 @@ function renderSkills() {
       checkbox.type = 'checkbox';
       checkbox.checked = res.done;
       checkbox.onchange = () => {
+        const scrollY = window.scrollY;
         res.done = checkbox.checked;
         saveSkills();
         renderSkills();
+        window.scrollTo({ top: scrollY, behavior: 'instant' });
       };
       wrapper.appendChild(checkbox);
 
       const label = document.createElement('span');
-
-      if (res.link) {
-        label.innerHTML = `${res.title} – <a href="${res.link}" target="_blank" rel="noopener noreferrer">${res.link}</a>`;
-      } else {
-        label.textContent = `${res.title}`;
-      }
-
+      label.innerHTML = `${res.title}` +
+        (res.link ? ` – <a href="${res.link}" target="_blank" rel="noopener noreferrer">${res.link}</a>` : '') +
+        (res.deadline ? ` <span style="color: #ccc; font-size: 0.9em;">(Due: ${res.deadline})</span>` : '');
       wrapper.appendChild(label);
-      div.appendChild(wrapper);
+
+      contentWrapper.appendChild(wrapper);
     });
 
     const addResBtn = document.createElement('button');
@@ -73,59 +73,84 @@ function renderSkills() {
     addResBtn.onclick = () => {
       const title = prompt('Resource Title:');
       const link = prompt('Link (optional):');
+      const deadline = prompt('Deadline (optional, format: YYYY-MM-DD):');
       if (title) {
-        skill.resources.push({ title, link, done: false });
+        skill.resources.push({ title, link, deadline, done: false });
         saveSkills();
         renderSkills();
       }
     };
-    div.appendChild(addResBtn);
 
+    // Remove Skill button
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = 'Remove Skill';
+    removeBtn.className = 'remove';
+    removeBtn.onclick = () => {
+      skills.splice(index, 1);
+      saveSkills();
+      renderSkills();
+    };
+
+    // Append all
+    div.appendChild(title);
+    div.appendChild(progress);            // ✅ Progress bar just after title
+    contentWrapper.appendChild(addResBtn);
+    contentWrapper.appendChild(removeBtn);
+    div.appendChild(contentWrapper);
     container.appendChild(div);
   });
+
+  updateGlobalStats();
 }
 
 function addSkill() {
   const name = document.getElementById('new-skill-name').value.trim();
   if (name) {
-    skills.push({ name, resources: [] });
+    skills.push({ name, resources: [], completedCelebrated: false });
     saveSkills();
     renderSkills();
     document.getElementById('new-skill-name').value = '';
   }
 }
+
 function updateGlobalStats() {
-  const total = skills.reduce((sum, skill) => sum + skill.resources.length, 0);
-  const completed = skills.reduce(
-    (sum, skill) => sum + skill.resources.filter(r => r.done).length,
-    0
-  );
-
-  const remaining = total - completed;
-
   const ctx = document.getElementById('globalChart').getContext('2d');
+  if (globalChart) globalChart.destroy();
 
-  if (globalChart) {
-    globalChart.destroy(); 
-  }
+  const labels = [];
+  const data = [];
+
+  skills.forEach(skill => {
+    const total = skill.resources.length || 1;
+    const completed = skill.resources.filter(r => r.done).length;
+    const percent = Math.round((completed / total) * 100);
+    labels.push(skill.name);
+    data.push(percent);
+  });
 
   globalChart = new Chart(ctx, {
-    type: 'doughnut',
+    type: 'bar',
     data: {
-      labels: ['Completed', 'Remaining'],
+      labels: labels,
       datasets: [{
-        data: [completed, remaining],
-        backgroundColor: ['#58d68d', '#2e86c1'],
-        borderWidth: 1
+        label: 'Skill Completion (%)',
+        data: data,
+        backgroundColor: '#58d68d'
       }]
     },
     options: {
-      plugins: {
-        legend: {
-          labels: {
-            color: '#ffffff'
-          }
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: { color: '#ffffff' }
+        },
+        x: {
+          ticks: { color: '#ffffff' }
         }
+      },
+      plugins: {
+        legend: { labels: { color: '#ffffff' } }
       }
     }
   });
