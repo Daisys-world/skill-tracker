@@ -6,21 +6,27 @@
   <title>SkillGap Tracker</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
   <h1>Track and Close Your Skill Gaps</h1>
+
   <section id="intro">
-    <p>Identify, track, and conquer the exact knowledge gaps holding you back. Define your goals, and smash through learning barriers—one resource at a time.</p>
+    <p>Identify, track, and conquer the exact knowledge gaps holding you back. Define your current level, set goals, and smash through learning barriers—one resource at a time.</p>
   </section>
+
   <div id="add-skill-form">
     <input type="text" id="new-skill-name" placeholder="New skill name" />
+
     <button onclick="addSkill()">Add Skill</button>
   </div>
+
   <div id="global-stats">
     <canvas id="globalChart" width="300" height="300"></canvas>
   </div>
 
   <div id="skills-container"></div>
+
   <script src="script.js"></script>
 </body>
 </html>
