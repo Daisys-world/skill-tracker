@@ -5,10 +5,11 @@ body {
   padding: 20px;
   font-family: 'Rajdhani', sans-serif;
   background-color: #000000;
-  background-image: /* animated stars */
-  url('https://www.transparenttextures.com/patterns/stardust.png'); /* static drizzle texture */
-  background-size: cover;
-  background-repeat: repeat;
+  background-image: 
+    url('https://i.imgur.com/3dW3RhT.gif'),
+    url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-size: cover, auto;
+  background-repeat: repeat, repeat;
   background-attachment: fixed;
   color: #f0f0ff;
 }
@@ -46,6 +47,11 @@ h1 {
   color: #d1bfff;
   margin-bottom: 10px;
   text-shadow: 0 0 5px #6f42c1;
+  cursor: pointer;
+}
+
+.skill-content {
+  margin-top: 10px;
 }
 
 .resource {
@@ -120,6 +126,7 @@ input[type="text"] {
   width: 0%;
   transition: width 0.5s ease-in-out;
 }
+
 #global-stats {
   max-width: 400px;
   margin: 30px auto;
