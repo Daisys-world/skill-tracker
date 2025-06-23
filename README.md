@@ -2,7 +2,7 @@
 
 A stylish, skill gap analysis tool built to help you level up with purpose.  
 📌 Add your skills  
-📈 Define your current and target proficiency  
+📈 Check your progress
 📚 Track learning resources  
 ✅ Mark them complete as you conquer your knowledge gaps
 
@@ -10,9 +10,11 @@ A stylish, skill gap analysis tool built to help you level up with purpose.
 
 - Skill and resource tracking
 - Gap visualizations with progress bars
-- Local saving via browser (no login needed)
+- Local saving via browser 
 - Responsive and cosmic UI theme
+- Confetti celebration when you complete all the resources (to cheer you up cause why not)
 
-## Try it!
+## Try it here!
+https://daisys-world.github.io/skill-tracker/
 
 Built for learners, dreamers, and upskillers 🌌
